@@ -26,7 +26,7 @@ extern "C" {
 pub const SQLITE_VERSION: &[u8; 7] = b"3.46.0\0";
 pub const SQLITE_VERSION_NUMBER: i32 = 3046000;
 pub const SQLITE_SOURCE_ID: &[u8; 85] =
-    b"2024-05-23 13:25:27 96c92aba00c8375bc32fafcdf12429c58bd8aabfcadab6683e35bbb9cdebf19e\0";
+    b"2024-05-23 14:04:16 e3f8c70ef5a7349c0ebcb807b3ec4ad1f228f8afce1122889571fbf7471e68e4\0";
 pub const SQLITE_OK: i32 = 0;
 pub const SQLITE_ERROR: i32 = 1;
 pub const SQLITE_INTERNAL: i32 = 2;
@@ -2608,6 +2608,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn sqlite3_wal_info(
+        db: *mut sqlite3,
+        zDb: *const ::std::os::raw::c_char,
+        pnPrior: *mut ::std::os::raw::c_uint,
+        pnFrame: *mut ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn sqlite3_serialize(
         db: *mut sqlite3,
         zSchema: *const ::std::os::raw::c_char,
@@ -2740,6 +2748,13 @@ extern "C" {
 }
 extern "C" {
     pub fn sqlite3session_changeset(
+        pSession: *mut sqlite3_session,
+        pnChangeset: *mut ::std::os::raw::c_int,
+        ppChangeset: *mut *mut ::std::os::raw::c_void,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sqlite3session_fullchangeset(
         pSession: *mut sqlite3_session,
         pnChangeset: *mut ::std::os::raw::c_int,
         ppChangeset: *mut *mut ::std::os::raw::c_void,

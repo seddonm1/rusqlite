@@ -15,6 +15,9 @@ pub enum TransactionBehavior {
     /// EXCLUSIVE prevents other database connections from reading the database
     /// while the transaction is underway.
     Exclusive,
+    /// When a write-transaction is opened with "BEGIN CONCURRENT",
+    /// actually locking the database is deferred until a COMMIT is executed
+    Concurrent,
 }
 
 /// Options for how a Transaction or Savepoint should behave when it is dropped.
@@ -121,6 +124,7 @@ impl Transaction<'_> {
             TransactionBehavior::Deferred => "BEGIN DEFERRED",
             TransactionBehavior::Immediate => "BEGIN IMMEDIATE",
             TransactionBehavior::Exclusive => "BEGIN EXCLUSIVE",
+            TransactionBehavior::Concurrent => "BEGIN CONCURRENT",
         };
         conn.execute_batch(query).map(move |()| Transaction {
             conn,

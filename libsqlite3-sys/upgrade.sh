@@ -8,13 +8,20 @@ TARGET_DIR="$SCRIPT_DIR/../target"
 export SQLITE3_LIB_DIR="$SCRIPT_DIR/sqlite3"
 mkdir -p "$TARGET_DIR" "$SQLITE3_LIB_DIR"
 
-# Download and extract amalgamation
-SQLITE=sqlite-amalgamation-3460000
-curl -O https://sqlite.org/2024/$SQLITE.zip
-unzip -p "$SQLITE.zip" "$SQLITE/sqlite3.c" > "$SQLITE3_LIB_DIR/sqlite3.c"
-unzip -p "$SQLITE.zip" "$SQLITE/sqlite3.h" > "$SQLITE3_LIB_DIR/sqlite3.h"
-unzip -p "$SQLITE.zip" "$SQLITE/sqlite3ext.h" > "$SQLITE3_LIB_DIR/sqlite3ext.h"
-rm -f "$SQLITE.zip"
+# Download and build the amalgamation
+# https://www.sqlite.org/src/info/e3f8c70ef5a7349c
+SQLITE=e3f8c70e
+curl -O https://www.sqlite.org/src/zip/$SQLITE/SQLite-$SQLITE.zip
+unzip "SQLite-$SQLITE.zip"
+cd "SQLite-$SQLITE"
+bash configure
+make sqlite3.c
+cd ..
+cp "SQLite-$SQLITE/sqlite3.c" "$SQLITE3_LIB_DIR/sqlite3.c"
+cp "SQLite-$SQLITE/sqlite3.h" "$SQLITE3_LIB_DIR/sqlite3.h"
+cp "SQLite-$SQLITE/sqlite3ext.h" "$SQLITE3_LIB_DIR/sqlite3ext.h"
+rm -r "SQLite-$SQLITE"
+rm -r "SQLite-$SQLITE.zip"
 
 export SQLITE3_INCLUDE_DIR="$SQLITE3_LIB_DIR"
 # Regenerate bindgen file for sqlite3.h
